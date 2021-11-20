@@ -1,0 +1,104 @@
+==== CodeGen protocol v1.0 ====
+Input
+{
+  "session": "id",
+  "variables": [],
+  "syntax tree": {}
+}
+session - идентификатор сессии, который выдаётся менеджером
+variables - список глобальных переменных, которые используются в программе (с указанием типа). Например: "variables": [ { "name": "someData", "type": "integer", "const value": null } ]
+syntax tree - абстрактное синтаксическое дерево (НЕ бинарное), которое имеет рекурсивную структуру. Пример синтаксического дерева ниже:
+{
+  "main": [
+    {
+      "type": "operator",
+      "operator": "assign",
+      "left operand": {
+        "type": "variable",
+        "name": "someData"
+      },
+      "right operand": {
+        "type": "operator",
+        "operator": "plus",
+        "left operand": {
+          "type": "number",
+          "number": 14
+        },
+        "right operand": {
+          "type": "number",
+          "number": 20
+        }
+      }
+    },
+    {
+      "type": "marker",
+      "identifer": "c4ca4238a0b923820dcc509a6f75849b"
+    },
+    {
+      "type": "println",
+      "string to print": {
+        "type": "call",
+        "function": "StrToInt",
+        "arguments": [
+          {
+            "type": "variable",
+            "name": "someData"
+          }
+        ]
+      }
+    },
+    {
+      "type": "goto",
+      "identifer": "c4ca4238a0b923820dcc509a6f75849b"
+    }
+  ],
+  "functions": [
+    {
+      "arguments": [
+        {
+          "type": "integer",
+          "name": "dataZero"
+        }
+      ],
+      "return": {
+        "type": "integer",
+        "name": "dataReturn"
+      },
+      "variables": [],
+      "body": [
+        {
+          "type": "operator",
+          "operator": "assign",
+          "left operand": {
+            "type": "variable",
+            "name": "dataReturn"
+          },
+          "right operand": {
+            "type": "operator",
+            "operator": "plus",
+            "left operand": {
+              "type": "variable",
+              "name": "dataZero"
+            },
+            "right operand": {
+              "type": "number",
+              "number": 10
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+Для визуализации рекомендуется ресурс: https://jsonformatter.org/json-parser
+
+
+Output
+{
+  "success": true,
+  "error desc": "text",
+  "asm code": [ "line 1", "line 2" ]
+}
+success - true или false - успешность выполнения генерации кода. Если false, значит произошла ошибка.
+error desc - нужно только если success=false - это описание ошибки, например "Несинтезируемая конструкция"
+asm code - должно быть только при success=true - список строк программы на ассемблере

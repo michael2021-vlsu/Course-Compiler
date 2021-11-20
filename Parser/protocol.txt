@@ -1,0 +1,147 @@
+==== Parser protocol v1.0 ====
+Input
+{
+  "session": "id",
+  "tokens": []
+}
+session - идентификатор сессии, который выдаётся менеджером
+tokens - список токенов. Это массив, который может выглядеть, например, так:
+[
+  {
+    "type": "variable",
+    "content": "someData",
+    "line": 10,
+    "column": 0
+  },
+  {
+    "type": "assign",
+    "content": ":=",
+    "line": 10,
+    "column": 9
+  },
+  {
+    "type": "number",
+    "content": "14",
+    "line": 10,
+    "column": 12
+  },
+  {
+    "type": "arithmetic operator",
+    "content": "+",
+    "line": 10,
+    "column": 15
+  },
+  {
+    "type": "number",
+    "content": "20",
+    "line": 10,
+    "column": 17
+  },
+  {
+    "type": "semicolon",
+    "content": ";",
+    "line": 10,
+    "column": 19
+  }
+]
+для выражения
+someData := 14 + 20;
+
+Output
+{
+  "success": true,
+  "error desc": "text",
+  "error line": 10,
+  "error column": 4,
+  "variables": [],
+  "syntax tree": {}
+}
+success - true или false - успешность выполнения операции построения синтаксического дерева. Если false, значит произошла ошибка.
+error desc - нужно только если success=false - это описание ошибки, например "Попытка изменить значение константы."
+error line - может быть (может и не быть) только если success=false - это номер строки, в которой произошла ошибка.
+error column - может быть (может и не быть) только если success=false - это номер символа в строке, который является ошибкой.
+variables - требуется только если success=true - список глобальных переменных, которые используются в программе (с указанием типа). Например: "variables": [ { "name": "someData", "type": "integer", "const value": null } ]
+syntax tree - требуется только если success=true - абстрактное синтаксическое дерево (НЕ бинарное), которое имеет рекурсивную структуру. Пример синтаксического дерева ниже:
+{
+  "main": [
+    {
+      "type": "operator",
+      "operator": "assign",
+      "left operand": {
+        "type": "variable",
+        "name": "someData"
+      },
+      "right operand": {
+        "type": "operator",
+        "operator": "plus",
+        "left operand": {
+          "type": "number",
+          "number": 14
+        },
+        "right operand": {
+          "type": "number",
+          "number": 20
+        }
+      }
+    },
+    {
+      "type": "marker",
+      "identifer": "c4ca4238a0b923820dcc509a6f75849b"
+    },
+    {
+      "type": "println",
+      "string to print": {
+        "type": "call",
+        "function": "StrToInt",
+        "arguments": [
+          {
+            "type": "variable",
+            "name": "someData"
+          }
+        ]
+      }
+    },
+    {
+      "type": "goto",
+      "identifer": "c4ca4238a0b923820dcc509a6f75849b"
+    }
+  ],
+  "functions": [
+    {
+      "arguments": [
+        {
+          "type": "integer",
+          "name": "dataZero"
+        }
+      ],
+      "return": {
+        "type": "integer",
+        "name": "dataReturn"
+      },
+      "variables": [],
+      "body": [
+        {
+          "type": "operator",
+          "operator": "assign",
+          "left operand": {
+            "type": "variable",
+            "name": "dataReturn"
+          },
+          "right operand": {
+            "type": "operator",
+            "operator": "plus",
+            "left operand": {
+              "type": "variable",
+              "name": "dataZero"
+            },
+            "right operand": {
+              "type": "number",
+              "number": 10
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+Для визуализации рекомендуется ресурс: https://jsonformatter.org/json-parser
