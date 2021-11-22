@@ -1,5 +1,5 @@
 ﻿
-namespace SimpleIO {
+namespace CompilerUI {
     partial class DefaultForm {
         /// <summary>
         ///  Required designer variable.

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
 
-namespace SimpleIO {
+namespace CompilerUI {
     public partial class DefaultForm : Form {
         public DefaultForm() {
             InitializeComponent();
