@@ -6,6 +6,37 @@ serv = MicroServerAPI.MicroService(url_get='http://localhost:8080/5-semestr/comp
                                    url_post='http://localhost:8080/5-semestr/compiler/post-job',
                                    persistentMode=True)
 
+def ProcessResult(procres, procname, successneeded):
+    result = { "success":False, "lines":[] }
+    
+    if "success" in procres:
+        if procres["success"]:
+            if all(entry in procres for entry in successneeded):
+                return {"success":True}
+            else:
+                result["lines"] = ['Сервис "' + procname + '" неисправен!', 'Его ответ не содержит результата работы. Ожидалось следующее:'] + successneeded
+        else:
+            first = None
+            if "errorDesc" in procres:
+                first = ": " + procname + ": " + procres["errorDesc"]
+            else:
+                first = ": " + procname + ": Описание ошибки отсутствует."
+            if "errorLine" in procres:
+                if "errorColumn" in procres:
+                    first = "; символ: " + procres["errorColumn"] + first
+                    first = "Строка " + procres["errorLine"] + first
+                    offset = ""
+                    for i in range(0, procres["errorColumn"]):
+                        offset += "~"
+                    offset += "^"
+                    result["lines"] = [first, codePascal[int(procres["errorLine"])], offset]
+                else:
+                    result["lines"] = [first, codePascal[int(procres["errorLine"])]]
+    else:
+        result["lines"] = ['Сервис "' + procname + '" неисправен!','Его ответ не содержит признака успешности выполнения.']
+
+    return result
+
 while True:
     codePascal,addr = serv.GetNextJob(job_type='Compilation.Manager.Input.Pascal')
     #Begin of data processing area
@@ -21,66 +52,22 @@ while True:
     listOfTokens = serv.ProcessAsFunction(content={"session":session,"source":codePascal},
                            requested_function='Compilation.Lexer')
 
-    result = { "success":False, "lines":[] }
 
-    if "success" in listOfTokens:
-        if listOfTokens["success"]:
-            abstractSyntaxTree = serv.ProcessAsFunction(content={"session":session,"tokens":listOfTokens["tokens"]},
+    result = ProcessResult(listOfTokens, "лексер", ['tokens'])
+    if result["success"]:
+        abstractSyntaxTree = serv.ProcessAsFunction(content={"session":session,"tokens":listOfTokens["tokens"]},
                                    requested_function='Compilation.Parser')
 
-            if "success" in abstractSyntaxTree:
-                if abstractSyntaxTree["success"]:
-                    codeAsm = serv.ProcessAsFunction(content={"session":session,"variables":abstractSyntaxTree["variables"],"syntax tree":abstractSyntaxTree["syntax tree"]},
+        result = ProcessResult(listOfTokens, "парсер", ['variables', 'syntaxTree'])
+        if result["success"]:
+            codeAsm = serv.ProcessAsFunction(content={"session":session,"variables":abstractSyntaxTree["variables"],"syntaxTree":abstractSyntaxTree["syntaxTree"]},
                                    requested_function='Compilation.CodeGenerator')
 
-                    if "success" in codeAsm:
-                        if codeAsm["success"]:
-                            result["success"] = True
-                            result["lines"] = codeAsm["asm code"]
-                        else:
-                            first = None
-                            if "error desc" in codeAsm:
-                                first = ": Генератор кода: " + codeAsm["error desc"]
-                            else:
-                                first = ": Генератор кода: Описание ошибки отсутствует."
-                            
-                            result["lines"] = [ first ]
-                    else:
-                        result["lines"] = ["Сервис генератора кода неисправен!"]
-                else:
-                    first = None
-                    if "error desc" in abstractSyntaxTree:
-                        first = ": Парсер: " + abstractSyntaxTree["error desc"]
-                    else:
-                        first = ": Парсер: Описание ошибки отсутствует."
-                    
-                    if "error line" in abstractSyntaxTree:
-                        if "error column" in abstractSyntaxTree:
-                            first = "; символ: " + abstractSyntaxTree["error column"] + first
-                        first = "Строка " + abstractSyntaxTree["error line"] + first
+            result = ProcessResult(listOfTokens, "генератор кода", ['asm'])
+            if result["success"]:
+                result["lines"] = codeAsm["asm"]
 
-                        result["lines"] = [ first, codePascal[abstractSyntaxTree["error line"]] ]
-                    else:
-                        result["lines"] = [ first ]
-            else:
-                result["lines"] = ["Сервис парсера неисправен!"]
-        else:
-            first = None
-            if "error desc" in listOfTokens:
-                first = ": Лексер: " + listOfTokens["error desc"]
-            else:
-                first = ": Лексер: Описание ошибки отсутствует."
-            
-            if "error line" in listOfTokens:
-                if "error column" in listOfTokens:
-                    first = "; символ: " + listOfTokens["error column"] + first
-                first = "Строка " + listOfTokens["error line"] + first
 
-                result["lines"] = [ first, codePascal[listOfTokens["error line"]] ]
-            else:
-                result["lines"] = [ first ]
-    else:
-        result["lines"] = ["Сервис лексера неисправен!"]
 
     serv.ProcessAsFunction(content={"session":session,"bank":None,"operation":"post","data":"Manager's Mandat: Remove Session"},
                            requested_function='Compilation.Storage.Request')

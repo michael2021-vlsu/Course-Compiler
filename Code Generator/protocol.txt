@@ -1,30 +1,30 @@
-==== CodeGen protocol v1.0 ====
+==== CodeGen protocol v1.2 ====
 Input
 {
   "session": "id",
   "variables": [],
-  "syntax tree": {}
+  "syntaxTree": {}
 }
 session - идентификатор сессии, который выдаётся менеджером
-variables - список глобальных переменных, которые используются в программе (с указанием типа). Например: "variables": [ { "name": "someData", "type": "integer", "const value": null } ]
-syntax tree - абстрактное синтаксическое дерево (НЕ бинарное), которое имеет рекурсивную структуру. Пример синтаксического дерева ниже:
+variables - список глобальных переменных, которые используются в программе (с указанием типа). Например: "variables": [ { "name": "someData", "type": "integer", "constValue": null } ]
+syntaxTree - абстрактное синтаксическое дерево (НЕ бинарное), которое имеет рекурсивную структуру. Пример синтаксического дерева ниже:
 {
   "main": [
     {
       "type": "operator",
       "operator": "assign",
-      "left operand": {
+      "operandLeft": {
         "type": "variable",
         "name": "someData"
       },
-      "right operand": {
+      "operandRight": {
         "type": "operator",
         "operator": "plus",
-        "left operand": {
+        "operandLeft": {
           "type": "number",
           "number": 14
         },
-        "right operand": {
+        "operandRight": {
           "type": "number",
           "number": 20
         }
@@ -35,17 +35,14 @@ syntax tree - абстрактное синтаксическое дерево (
       "identifer": "c4ca4238a0b923820dcc509a6f75849b"
     },
     {
-      "type": "println",
-      "string to print": {
-        "type": "call",
-        "function": "StrToInt",
-        "arguments": [
-          {
-            "type": "variable",
-            "name": "someData"
-          }
-        ]
-      }
+      "type": "call",
+      "function": "writeln",
+      "arguments": [
+        {
+          "type": "variable",
+          "name": "someData"
+        }
+      ]
     },
     {
       "type": "goto",
@@ -54,6 +51,7 @@ syntax tree - абстрактное синтаксическое дерево (
   ],
   "functions": [
     {
+      "name":"Add10",
       "arguments": [
         {
           "type": "integer",
@@ -69,18 +67,18 @@ syntax tree - абстрактное синтаксическое дерево (
         {
           "type": "operator",
           "operator": "assign",
-          "left operand": {
+          "operandLeft": {
             "type": "variable",
             "name": "dataReturn"
           },
-          "right operand": {
+          "operandRight": {
             "type": "operator",
             "operator": "plus",
-            "left operand": {
+            "operandLeft": {
               "type": "variable",
               "name": "dataZero"
             },
-            "right operand": {
+            "operandRight": {
               "type": "number",
               "number": 10
             }
@@ -96,9 +94,9 @@ syntax tree - абстрактное синтаксическое дерево (
 Output
 {
   "success": true,
-  "error desc": "text",
-  "asm code": [ "line 1", "line 2" ]
+  "errorDesc": "text",
+  "asm": [ "line 1", "line 2" ]
 }
 success - true или false - успешность выполнения генерации кода. Если false, значит произошла ошибка.
-error desc - нужно только если success=false - это описание ошибки, например "Несинтезируемая конструкция"
-asm code - должно быть только при success=true - список строк программы на ассемблере
+errorDesc - нужно только если success=false - это описание ошибки, например "Несинтезируемая конструкция"
+asm - должно быть только при success=true - список строк программы на ассемблере
