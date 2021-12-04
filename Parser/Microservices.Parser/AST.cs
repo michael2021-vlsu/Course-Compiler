@@ -48,10 +48,7 @@ namespace Compilation.Parser.AST {
         public TreeNode operandRight;
     }
 
-    namespace ArithmeticOperator {
-        class UPlus : Unary {
-            public UPlus(TreeNode b) : base("u_plus", b) { }
-        }
+    namespace ArithmeticOperators {
         class UMinus : Unary {
             public UMinus(TreeNode b) : base("u_minus", b) { }
         }
@@ -75,7 +72,7 @@ namespace Compilation.Parser.AST {
         }
     }
 
-    namespace LogicOperator {
+    namespace LogicOperators {
         class Not : Unary {
             public Not(TreeNode b) : base("not", b) { }
         }
@@ -105,12 +102,35 @@ namespace Compilation.Parser.AST {
         }
     }
 
+
+    namespace DataTypes {
+        class Integer : TreeNode {
+            public Integer(int number) : base("number") {
+                this.number = number;
+            }
+            public int number;
+        }
+
+        class String : TreeNode {
+            public String(string @string) : base("string") {
+                this.@string = @string;
+            }
+            public string @string;
+        }
+    }
+    
+
     class Call : TreeNode {
-        public Call(string function) : base("call") {
+        public Call(string function, TreeNode[] arguments) : base("call") {
             this.function = function;
+            this.arguments = arguments;
         }
         public string function;
-        TreeNode[] arguments;
+        public TreeNode[] arguments;
+    }
+
+    class Exit : Call {
+        public Exit() : base("exit", new TreeNode[] { new DataTypes.Integer(0) }) { }
     }
 
     class Variable : TreeNode {
@@ -163,6 +183,13 @@ namespace Compilation.Parser.AST {
 
 
     class Function {
+        public Function(string name, VarDef[] arguments, VarDef @return, VarDefConstable[] variables, TreeNode[] body) {
+            this.name = name;
+            this.arguments = arguments;
+            this.@return = @return;
+            this.variables = variables;
+            this.body = body;
+        }
         public string name;
         public VarDef[] arguments;
         public VarDef @return;
