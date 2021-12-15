@@ -1,4 +1,4 @@
-==== CodeGen protocol v1.2 ====
+==== CodeGen protocol v1.4 ====
 Input
 {
   "session": "id",
@@ -31,10 +31,6 @@ syntaxTree - абстрактное синтаксическое дерево (�
       }
     },
     {
-      "type": "marker",
-      "identifer": "c4ca4238a0b923820dcc509a6f75849b"
-    },
-    {
       "type": "call",
       "function": "writeln",
       "arguments": [
@@ -43,25 +39,18 @@ syntaxTree - абстрактное синтаксическое дерево (�
           "name": "someData"
         }
       ]
-    },
-    {
-      "type": "goto",
-      "identifer": "c4ca4238a0b923820dcc509a6f75849b"
     }
   ],
-  "functions": [
+  "procedures": [
     {
-      "name":"Add10",
+      "name": "Add10",
       "arguments": [
         {
           "type": "integer",
-          "name": "dataZero"
+          "name": "dataZero",
+          "pointer": true
         }
       ],
-      "return": {
-        "type": "integer",
-        "name": "dataReturn"
-      },
       "variables": [],
       "body": [
         {
