@@ -1,22 +1,24 @@
 ﻿
 namespace Compilation.Parser.AST {
-    struct VarDef {
-        public VarDef(string name, string type) {
+    struct VarDefPointable {
+        public VarDefPointable(string name, string type, bool pointer) {
             this.name = name;
             this.type = type;
+            this.pointer = pointer;
         }
         public string name,
             type;
+        public bool pointer;
     }
     struct VarDefConstable {
-        public VarDefConstable(string name, string type, bool constValue) {
+        public VarDefConstable(string name, string type, TreeNode constValue) {
             this.name = name;
             this.type = type;
             this.constValue = constValue;
         }
         public string name,
             type;
-        public bool constValue;
+        public TreeNode constValue;
     }
 
     abstract class TreeNode {
@@ -61,9 +63,9 @@ namespace Compilation.Parser.AST {
         class Multiply : Binary {
             public Multiply(TreeNode a, TreeNode b) : base("multiply", a, b) { }
         }
-        class Divide : Binary {
+        /*class Divide : Binary { //Like Div in this case
             public Divide(TreeNode a, TreeNode b) : base("divide", a, b) { }
-        }
+        }*/
         class Div : Binary {
             public Div(TreeNode a, TreeNode b) : base("div", a, b) { }
         }
@@ -73,9 +75,9 @@ namespace Compilation.Parser.AST {
     }
 
     namespace LogicOperators {
-        class Not : Unary {
+        /*class Not : Unary {
             public Not(TreeNode b) : base("not", b) { }
-        }
+        }*/
         class And : Binary {
             public And(TreeNode a, TreeNode b) : base("and", a, b) { }
         }
@@ -91,17 +93,16 @@ namespace Compilation.Parser.AST {
         class Equal : Binary {
             public Equal(TreeNode a, TreeNode b) : base("equal", a, b) { }
         }
-        class LessEqual : Binary {
+        /*class LessEqual : Binary {
             public LessEqual(TreeNode a, TreeNode b) : base("less-equal", a, b) { }
         }
         class MoreEqual : Binary {
             public MoreEqual(TreeNode a, TreeNode b) : base("more-equal", a, b) { }
-        }
+        }*/
         class NotEqual : Binary {
             public NotEqual(TreeNode a, TreeNode b) : base("non-equal", a, b) { }
         }
     }
-
 
     namespace DataTypes {
         class Integer : TreeNode {
@@ -111,14 +112,13 @@ namespace Compilation.Parser.AST {
             public int number;
         }
 
-        class String : TreeNode {
+        /*class String : TreeNode {
             public String(string @string) : base("string") {
                 this.@string = @string;
             }
             public string @string;
-        }
+        }*/
     }
-    
 
     class Call : TreeNode {
         public Call(string function, TreeNode[] arguments) : base("call") {
@@ -138,20 +138,6 @@ namespace Compilation.Parser.AST {
             this.name = name;
         }
         public string name;
-    }
-
-    class Goto : TreeNode {
-        public Goto(string identifer) : base("goto") {
-            this.identifer = identifer;
-        }
-        public string identifer;
-    }
-
-    class Marker : TreeNode {
-        public Marker(string identifer) : base("marker") {
-            this.identifer = identifer;
-        }
-        public string identifer;
     }
 
     abstract class Loop : TreeNode {
@@ -182,17 +168,15 @@ namespace Compilation.Parser.AST {
     }
 
 
-    class Function {
-        public Function(string name, VarDef[] arguments, VarDef @return, VarDefConstable[] variables, TreeNode[] body) {
+    class Procedure {
+        public Procedure(string name, VarDefPointable[] arguments, VarDefConstable[] variables, TreeNode[] body) {
             this.name = name;
             this.arguments = arguments;
-            this.@return = @return;
             this.variables = variables;
             this.body = body;
         }
         public string name;
-        public VarDef[] arguments;
-        public VarDef @return;
+        public VarDefPointable[] arguments;
         public VarDefConstable[] variables;
         public TreeNode[] body;
     }

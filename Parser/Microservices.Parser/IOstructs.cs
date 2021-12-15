@@ -14,13 +14,13 @@ namespace Compilation.Parser.IOstructs {
     }
 
     class TreeRoot {
-        public TreeRoot(TreeNode[] main, Function[] functions) {
+        public TreeRoot(TreeNode[] main, Procedure[] functions) {
             this.main = main;
             this.functions = functions;
         }
 
         public TreeNode[] main;
-        public Function[] functions;
+        public Procedure[] functions;
     }
 
     
