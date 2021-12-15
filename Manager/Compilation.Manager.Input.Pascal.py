@@ -16,22 +16,28 @@ def ProcessResult(procres, procname, successneeded):
             else:
                 result["lines"] = ['Сервис "' + procname + '" неисправен!', 'Его ответ не содержит результата работы. Ожидалось следующее:'] + successneeded
         else:
-            first = None
+            first = []
             if "errorDesc" in procres:
-                first = ": " + procname + ": " + procres["errorDesc"]
+                first = [w.strip() for w in procres["errorDesc"].split('\n')]
+                first[0] = ": " + procname + ": " + first[0]
             else:
-                first = ": " + procname + ": Описание ошибки отсутствует."
+                first = [": " + procname + ": Описание ошибки отсутствует."]
+                
             if "errorLine" in procres:
                 if "errorColumn" in procres:
-                    first = "; символ: " + procres["errorColumn"] + first
-                    first = "Строка " + procres["errorLine"] + first
+                    first[0] = "; символ: " + procres["errorColumn"] + first[0]
+                    first[0] = "Строка " + procres["errorLine"] + first[0]
                     offset = ""
                     for i in range(0, procres["errorColumn"]):
                         offset += "~"
                     offset += "^"
-                    result["lines"] = [first, codePascal[int(procres["errorLine"])], offset]
+                    
+                    first.append(codePascal[int(procres["errorLine"])])
+                    first.append(offset)
+                    result["lines"] = first
                 else:
-                    result["lines"] = [first, codePascal[int(procres["errorLine"])]]
+                    first.append(codePascal[int(procres["errorLine"])])
+                    result["lines"] = first
     else:
         result["lines"] = ['Сервис "' + procname + '" неисправен!','Его ответ не содержит признака успешности выполнения.']
 
