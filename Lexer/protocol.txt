@@ -1,4 +1,4 @@
-==== Lexer protocol v1.1 ====
+==== Lexer protocol v1.2 ====
 Input
 {
   "session": "id",
@@ -60,3 +60,31 @@ tokens - должно быть только при success=true - список �
 ]
 для выражения
 someData := 14 + 20;
+
+Код нужно разделить на следующие токены:
+program
+procedure
+begin
+end
+colon
+dot
+comma
+semicolon
+var
+integer-word
+const
+assign
+exit
+internal-name
+number
+boolean
+left-parenthesis
+right-parenthesis
+arithmetic-operator
+logic-operator
+comparsion-operator
+for
+to
+downto
+while
+do
