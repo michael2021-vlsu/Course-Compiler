@@ -52,6 +52,7 @@ namespace Compilation.Parser {
 
         public enum Token { //"_" - means "flexible" category (need more accurate recognition)
             Program, //program name definition keyword
+            Procedure, //Procedure definition start
             Begin, End, //code section
             Colon, //in this case, colon is keyword
             Dot, //End of program
@@ -87,6 +88,7 @@ namespace Compilation.Parser {
         //([a-zA-Z_]\w*)|([\d+*\-\/]+)|(\((?:[a-zA-Z_]\w*|[\d+*\-\/]|((?3)))+\))
         public static readonly Dictionary<string, Token> TokenCvt = new(new KeyValuePair<string, Token>[] {
             new("program", Token.Program),
+            new("procedure", Token.Procedure),
             new("begin", Token.Begin),
             new("end", Token.End),
             new("colon", Token.Colon),
