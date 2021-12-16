@@ -93,12 +93,12 @@ namespace Compilation.Parser.AST {
         class Equal : Binary {
             public Equal(TreeNode a, TreeNode b) : base("equal", a, b) { }
         }
-        /*class LessEqual : Binary {
+        class LessEqual : Binary {
             public LessEqual(TreeNode a, TreeNode b) : base("less-equal", a, b) { }
         }
         class MoreEqual : Binary {
             public MoreEqual(TreeNode a, TreeNode b) : base("more-equal", a, b) { }
-        }*/
+        }
         class NotEqual : Binary {
             public NotEqual(TreeNode a, TreeNode b) : base("non-equal", a, b) { }
         }
