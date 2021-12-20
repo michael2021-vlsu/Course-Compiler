@@ -113,7 +113,7 @@ syntaxTree - требуется только если success=true - абстр�
           "operator": "assign",
           "operandLeft": {
             "type": "variable",
-            "name": "dataReturn"
+            "name": "dataZero"
           },
           "operandRight": {
             "type": "operator",
