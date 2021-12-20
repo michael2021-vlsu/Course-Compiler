@@ -1,4 +1,4 @@
-==== Parser protocol v1.4 ====
+==== Parser protocol v1.5 ====
 Input
 {
   "session": "id",
@@ -102,7 +102,8 @@ syntaxTree - требуется только если success=true - абстр�
         {
           "type": "integer",
           "name": "dataZero",
-          "pointer": true
+          "pointer": true,
+		  "const": false
         }
       ],
       "variables": [],
