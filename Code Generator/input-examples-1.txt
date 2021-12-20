@@ -1,0 +1,110 @@
+{
+  "session": "11ca7c4b4f7c775017bd56c5e3341c07",
+  "variables": [
+    {
+      "name": "a",
+      "type": "integer",
+      "constValue": null
+    },
+    {
+      "name": "b",
+      "type": "integer",
+      "constValue": {
+        "type": "number",
+        "number": 14
+      }
+    }
+  ],
+  "syntaxTree": {
+    "main": [
+      {
+        "type": "operator",
+        "operator": "assign",
+        "operandLeft": {
+          "type": "variable",
+          "name": "a"
+        },
+        "operandRight": {
+          "type": "number",
+          "number": 20
+        }
+      },
+      {
+        "type": "call",
+        "function": "writeln",
+        "arguments": [
+          {
+            "type": "variable",
+            "name": "a"
+          }
+        ]
+      },
+      {
+        "type": "while",
+        "condition": {
+          "type": "boolean",
+          "name": true
+        },
+        "body": [
+          {
+            "type": "call",
+            "function": "writeln",
+            "arguments": [
+              {
+                "type": "variable",
+                "name": "b"
+              }
+            ]
+          },
+          {
+            "type": "call",
+            "function": "exit",
+            "arguments": []
+          }
+        ]
+      }
+    ],
+    "procedures": [
+      {
+        "name": "Add",
+        "arguments": [
+          {
+            "type": "integer",
+            "name": "dataZero",
+            "pointer": true,
+            "const": false
+          },
+          {
+            "type": "integer",
+            "name": "a",
+            "pointer": false,
+            "const": true
+          }
+        ],
+        "variables": [],
+        "body": [
+          {
+            "type": "operator",
+            "operator": "assign",
+            "operandLeft": {
+              "type": "variable",
+              "name": "dataZero"
+            },
+            "operandRight": {
+              "type": "operator",
+              "operator": "plus",
+              "operandLeft": {
+                "type": "variable",
+                "name": "dataZero"
+              },
+              "operandRight": {
+                "type": "variable",
+                "name": "a"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "session": "03d59e663c1af9ac33a9949d1193505a",
+  "variables": [
+    {
+      "name": "result",
+      "type": "integer",
+      "constValue": null
+    },
+    {
+      "name": "a",
+      "type": "integer",
+      "constValue": null
+    },
+    {
+      "name": "b",
+      "type": "integer",
+      "constValue": null
+    }
+  ],
+  "syntaxTree": {
+    "main": [
+      {
+        "type": "operator",
+        "operator": "assign",
+        "operandLeft": {
+          "type": "variable",
+          "name": "a"
+        },
+        "operandRight": {
+          "type": "number",
+          "number": 20
+        }
+      },
+      {
+        "type": "operator",
+        "operator": "assign",
+        "operandLeft": {
+          "type": "variable",
+          "name": "b"
+        },
+        "operandRight": {
+          "type": "number",
+          "number": 48
+        }
+      },
+      {
+        "type": "for",
+        "from": {
+          "type": "number",
+          "number": 21
+        },
+        "to": {
+          "type": "variable",
+          "name": "b"
+        },
+        "ascending": true,
+        "body": [
+          {
+            "type": "call",
+            "function": "Add10",
+            "arguments": [
+              {
+                "type": "variable",
+                "name": "result"
+              }
+            ]
+          },
+          {
+            "type": "operator",
+            "operator": "assign",
+            "operandLeft": {
+              "type": "variable",
+              "name": "a"
+            },
+            "operandRight": {
+              "type": "operator",
+              "operator": "minus",
+              "operandLeft": {
+                "type": "variable",
+                "name": "a"
+              },
+              "operandRight": {
+                "type": "number",
+                "number": 1
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "call",
+        "function": "Mul",
+        "arguments": [
+          {
+            "type": "variable",
+            "name": "result"
+          },
+          {
+            "type": "variable",
+            "name": "a"
+          },
+          {
+            "type": "variable",
+            "name": "b"
+          }
+        ]
+      },
+      {
+        "type": "call",
+        "function": "writeln",
+        "arguments": [
+          {
+            "type": "variable",
+            "name": "result"
+          }
+        ]
+      }
+    ],
+    "procedures": [
+      {
+        "name": "Add10",
+        "arguments": [
+          {
+            "type": "integer",
+            "name": "dataZero",
+            "pointer": true,
+            "const": false
+          }
+        ],
+        "variables": [],
+        "body": [
+          {
+            "type": "operator",
+            "operator": "assign",
+            "operandLeft": {
+              "type": "variable",
+              "name": "dataZero"
+            },
+            "operandRight": {
+              "type": "operator",
+              "operator": "plus",
+              "operandLeft": {
+                "type": "variable",
+                "name": "dataZero"
+              },
+              "operandRight": {
+                "type": "number",
+                "number": 10
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Mul",
+        "arguments": [
+          {
+            "type": "integer",
+            "name": "dataZero",
+            "pointer": true,
+            "const": false
+          },
+          {
+            "type": "integer",
+            "name": "dataOne",
+            "pointer": false,
+            "const": false
+          },
+          {
+            "type": "integer",
+            "name": "dataTwo",
+            "pointer": false,
+            "const": false
+          }
+        ],
+        "variables": [],
+        "body": [
+          {
+            "type": "operator",
+            "operator": "assign",
+            "operandLeft": {
+              "type": "variable",
+              "name": "dataZero"
+            },
+            "operandRight": {
+              "type": "operator",
+              "operator": "multiply",
+              "operandLeft": {
+                "type": "variable",
+                "name": "dataOne"
+              },
+              "operandRight": {
+                "type": "variable",
+                "name": "dataTwo"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
