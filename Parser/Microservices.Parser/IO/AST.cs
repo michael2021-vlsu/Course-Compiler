@@ -1,17 +1,18 @@
 ﻿
 namespace Compilation.Parser.AST {
-    struct VarDefPointable {
-        public VarDefPointable(string name, string type, bool pointer) {
+    struct VarDesc_ConstablePointeble {
+        public VarDesc_ConstablePointeble(string name, string type, bool pointer, bool @const) {
             this.name = name;
             this.type = type;
             this.pointer = pointer;
+            this.@const = @const;
         }
         public string name,
             type;
-        public bool pointer;
+        public bool pointer, @const;
     }
-    struct VarDefConstable {
-        public VarDefConstable(string name, string type, TreeNode constValue) {
+    struct VarDef_Constable {
+        public VarDef_Constable(string name, string type, TreeNode constValue) {
             this.name = name;
             this.type = type;
             this.constValue = constValue;
@@ -112,6 +113,13 @@ namespace Compilation.Parser.AST {
             public int number;
         }
 
+        class Boolean : TreeNode {
+            public Boolean(bool value) : base("boolean") {
+                this.value = value;
+            }
+            public bool value;
+        }
+
         /*class String : TreeNode {
             public String(string @string) : base("string") {
                 this.@string = @string;
@@ -130,7 +138,7 @@ namespace Compilation.Parser.AST {
     }
 
     class Exit : Call {
-        public Exit() : base("exit", new TreeNode[] { new DataTypes.Integer(0) }) { }
+        public Exit() : base("exit", System.Array.Empty<TreeNode>()) { }
     }
 
     class Variable : TreeNode {
@@ -140,44 +148,38 @@ namespace Compilation.Parser.AST {
         public string name;
     }
 
-    abstract class Loop : TreeNode {
-        public Loop(string loop) : base("loop") {
-            this.loop = loop;
-        }
-        public string loop;
-    }
-
-    class While : Loop {
+    class While : TreeNode {
         public While(TreeNode[] body, TreeNode condition) : base("while") {
             this.body = body;
             this.condition = condition;
         }
-        public TreeNode[] body;
         public TreeNode condition;
+        public TreeNode[] body;
     }
 
-    class For : Loop {
-        public For(TreeNode[] body, TreeNode condition, TreeNode stepmaker) : base("for") {
+    class For : TreeNode {
+        public For(TreeNode[] body, TreeNode from, TreeNode to, bool ascending) : base("for") {
             this.body = body;
-            this.condition = condition;
-            this.stepmaker = stepmaker;
+            this.from = from;
+            this.to = to;
+            this.ascending = ascending;
         }
+        public TreeNode from, to;
+        public bool ascending;
         public TreeNode[] body;
-        public TreeNode condition;
-        public TreeNode stepmaker;
     }
 
 
     class Procedure {
-        public Procedure(string name, VarDefPointable[] arguments, VarDefConstable[] variables, TreeNode[] body) {
+        public Procedure(string name, VarDesc_ConstablePointeble[] arguments, VarDef_Constable[] variables, TreeNode[] body) {
             this.name = name;
             this.arguments = arguments;
             this.variables = variables;
             this.body = body;
         }
         public string name;
-        public VarDefPointable[] arguments;
-        public VarDefConstable[] variables;
+        public VarDesc_ConstablePointeble[] arguments;
+        public VarDef_Constable[] variables;
         public TreeNode[] body;
     }
 }
