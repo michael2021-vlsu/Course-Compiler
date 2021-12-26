@@ -74,7 +74,7 @@ namespace Compilation.Lexer {
             new(0, "false", 2, "boolean", true),
 
             new(1, "^[0-9]+", 0, "number", false),
-            new(1, "^[a-zA-Z_][a-zA-Z0-9_]+", 0, "internal-name", false)
+            new(1, "^[a-zA-Z_][a-zA-Z0-9_]*", 0, "internal-name", false)
         };
 
         readonly char[] Letters = "abcdefghijklmnopqrstuvwxyz_".ToCharArray();
