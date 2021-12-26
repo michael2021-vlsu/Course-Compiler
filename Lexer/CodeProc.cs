@@ -15,7 +15,7 @@ namespace Compilation.Lexer {
         List<Program.Token> tokens = new();
 
         struct TapePos {
-            public TapePos(byte method, string pattern, bool prohibitFollowLetters, string token, bool toLowerCase) {
+            public TapePos(byte method, string pattern, byte prohibitFollowLetters, string token, bool toLowerCase) {
                 this.method = method;
                 this.pattern = pattern;
                 this.prohibitFollowLetters = prohibitFollowLetters;
@@ -24,60 +24,74 @@ namespace Compilation.Lexer {
             }
             public byte method; //0 - StartsWith, 1 - regex
             public string pattern;
-            public bool prohibitFollowLetters;
+            public byte prohibitFollowLetters; //0 - no, 1 - just letters and underscore, 2 - letters, underscore and digits
             public string token;
             public bool toLowerCase;
         }
 
         TapePos[] tape = new TapePos[] {
-            new(0, "program", true, "program", true),
-            new(0, "procedure", true, "procedure", true),
-            new(0, "begin", true, "begin", true),
-            new(0, "end", true, "end", true),
-            new(0, ":=", false, "assign", false),
+            new(0, "program", 2, "program", true),
+            new(0, "procedure", 2, "procedure", true),
+            new(0, "begin", 2, "begin", true),
+            new(0, "end", 2, "end", true),
+            new(0, ":=", 0, "assign", false),
 
-            new(0, "var", true, "var", true),
-            new(0, "integer", true, "integer-word", true),
-            new(0, "const", true, "const", true),
+            new(0, "var", 2, "var", true),
+            new(0, "integer", 2, "integer-word", true),
+            new(0, "const", 2, "const", true),
 
-            new(0, "exit", true, "exit", true),
+            new(0, "exit", 2, "exit", true),
             
-            new(0, "(", false, "left-parenthesis", false),
-            new(0, ")", false,"right-parenthesis", false),
+            new(0, "(", 0, "left-parenthesis", false),
+            new(0, ")", 0,"right-parenthesis", false),
 
-            new(1, "^[+*\\-\\/]", false, "arithmetic-operator", false),
-            new(0, "div", true, "arithmetic-operator", true),
-            new(0, "mod", true, "arithmetic-operator", true),
+            new(1, "^[+*\\-\\/]", 0, "arithmetic-operator", false),
+            new(0, "div", 1, "arithmetic-operator", true),
+            new(0, "mod", 1, "arithmetic-operator", true),
 
-            new(0, "and", true, "logic-operator", true),
-            new(0, "or", true, "logic-operator", true),
+            new(0, "and", 2, "logic-operator", true),
+            new(0, "or", 2, "logic-operator", true),
 
-            new(0, "<>", false, "comparsion-operator", false),
-            new(0, "<=", false, "comparsion-operator", false),
-            new(0, ">=", false, "comparsion-operator", false),
-            new(0, "=", false, "comparsion-operator", false),
-            new(0, "<", false, "comparsion-operator", false),
-            new(0, ">", false, "comparsion-operator", false),
+            new(0, "<>", 0, "comparsion-operator", false),
+            new(0, "<=", 0, "comparsion-operator", false),
+            new(0, ">=", 0, "comparsion-operator", false),
+            new(0, "=", 0, "comparsion-operator", false),
+            new(0, "<", 0, "comparsion-operator", false),
+            new(0, ">", 0, "comparsion-operator", false),
            
-            new(0, "for", true, "for", true),
-            new(0, "to", true, "to", true),
-            new(0, "downto", true, "downto", true),
-            new(0, "while", true, "while", true),
-            new(0, "do", true, "do", true),
+            new(0, "for", 2, "for", true),
+            new(0, "to", 2, "to", true),
+            new(0, "downto", 2, "downto", true),
+            new(0, "while", 2, "while", true),
+            new(0, "do", 2, "do", true),
 
-            new(0, ":", false, "colon", false),
-            new(0, ".", false, "dot", false),
-            new(0, ",", false, "comma", false),
-            new(0, ";", false, "semicolon", false),
+            new(0, ":", 0, "colon", false),
+            new(0, ".", 0, "dot", false),
+            new(0, ",", 0, "comma", false),
+            new(0, ";", 0, "semicolon", false),
 
-            new(0, "true", false, "boolean", true),
-            new(0, "false", false, "boolean", true),
+            new(0, "true", 2, "boolean", true),
+            new(0, "false", 2, "boolean", true),
 
-            new(1, "^[0-9]+", false, "number", false),
-            new(1, "^[a-zA-Z_][a-zA-Z0-9_]+", false, "internal-name", false)
+            new(1, "^[0-9]+", 0, "number", false),
+            new(1, "^[a-zA-Z_][a-zA-Z0-9_]+", 0, "internal-name", false)
         };
 
-        readonly char[] Letters = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+        readonly char[] Letters = "abcdefghijklmnopqrstuvwxyz_".ToCharArray();
+        readonly char[] LettersDigits = "abcdefghijklmnopqrstuvwxyz_0123456789".ToCharArray();
+
+        bool IsNotProhibited(char lwchar, byte mode) {
+            if (mode == 2) {
+                if (LettersDigits.All(l => l != lwchar)) {
+                    return true;
+                }
+            } else { //mode == 1
+                if (Letters.All(l => l != lwchar)) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public Program.Output Run() {
             for (int linei = 0; linei != code.Length; ++linei) {
@@ -128,9 +142,8 @@ namespace Compilation.Lexer {
                                     if (pos.toLowerCase) {
                                         var lw = strpart.ToLower();
                                         if (lw.StartsWith(pos.pattern)) {
-                                            if (pos.prohibitFollowLetters) {
-                                                char c = lw[pos.pattern.Length];
-                                                if (Letters.All(l => l != c)) {
+                                            if (pos.prohibitFollowLetters != 0) {
+                                                if (IsNotProhibited(lw[pos.pattern.Length], pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, pos.pattern, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, pos.pattern.Length).ExtactString();
                                                     break;
@@ -143,9 +156,8 @@ namespace Compilation.Lexer {
                                         }
                                     } else {
                                         if (strpart.StartsWith(pos.pattern)) {
-                                            if (pos.prohibitFollowLetters) {
-                                                char c = char.ToLower(strpart[pos.pattern.Length]);
-                                                if (Letters.All(l => l != c)) {
+                                            if (pos.prohibitFollowLetters != 0) {
+                                                if (IsNotProhibited(char.ToLower(strpart[pos.pattern.Length]), pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, pos.pattern, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, pos.pattern.Length).ExtactString();
                                                     break;
@@ -162,9 +174,8 @@ namespace Compilation.Lexer {
                                         var lw = strpart.ToLower();
                                         var match = Regex.Match(lw, pos.pattern);
                                         if (match.Success) {
-                                            if (pos.prohibitFollowLetters) {
-                                                char c = lw[match.Value.Length];
-                                                if (Letters.All(l => l != c)) {
+                                            if (pos.prohibitFollowLetters != 0) {
+                                                if (IsNotProhibited(lw[match.Value.Length], pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, match.Value, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, match.Value.Length).ExtactString();
                                                     break;
@@ -178,9 +189,8 @@ namespace Compilation.Lexer {
                                     } else {
                                         var match = Regex.Match(strpart, pos.pattern);
                                         if (match.Success) {
-                                            if (pos.prohibitFollowLetters) {
-                                                char c = char.ToLower(strpart[match.Value.Length]);
-                                                if (Letters.All(l => l != c)) {
+                                            if (pos.prohibitFollowLetters != 0) {
+                                                if (IsNotProhibited(char.ToLower(strpart[match.Value.Length]), pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, match.Value, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, match.Value.Length).ExtactString();
                                                     break;
