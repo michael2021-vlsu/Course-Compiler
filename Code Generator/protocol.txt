@@ -1,4 +1,4 @@
-==== CodeGen protocol v1.5 ====
+==== CodeGen protocol v1.6 ====
 Input
 {
   "session": "id",
@@ -148,6 +148,12 @@ asm - должно быть только при success=true - список ст
 {
   "type": "operator",
   "operator": "multiply",
+  "operandLeft": {},
+  "operandRight": {}
+}
+{
+  "type": "operator",
+  "operator": "divide",
   "operandLeft": {},
   "operandRight": {}
 }
