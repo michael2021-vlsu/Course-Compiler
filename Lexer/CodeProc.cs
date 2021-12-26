@@ -96,8 +96,7 @@ namespace Compilation.Lexer {
         public Program.Output Run() {
             for (int linei = 0; linei != code.Length; ++linei) {
                 string line = code[linei];
-                StringBox[] lineparts = new StringBox(code[linei]).Split(' ');
-
+                StringBox[] lineparts = new StringBox(Regex.Replace(code[linei], @"[^\S ]+", "")).Split(' ');
                 foreach (var part in lineparts) {
                     if (part.Length == 0) continue;
 
