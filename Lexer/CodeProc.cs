@@ -143,7 +143,7 @@ namespace Compilation.Lexer {
                                         var lw = strpart.ToLower();
                                         if (lw.StartsWith(pos.pattern)) {
                                             if (pos.prohibitFollowLetters != 0) {
-                                                if (IsNotProhibited(lw[pos.pattern.Length], pos.prohibitFollowLetters)) {
+                                                if (pos.pattern.Length == lw.Length || IsNotProhibited(lw[pos.pattern.Length], pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, pos.pattern, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, pos.pattern.Length).ExtactString();
                                                     break;
@@ -157,7 +157,7 @@ namespace Compilation.Lexer {
                                     } else {
                                         if (strpart.StartsWith(pos.pattern)) {
                                             if (pos.prohibitFollowLetters != 0) {
-                                                if (IsNotProhibited(char.ToLower(strpart[pos.pattern.Length]), pos.prohibitFollowLetters)) {
+                                                if (pos.pattern.Length == strpart.Length || IsNotProhibited(char.ToLower(strpart[pos.pattern.Length]), pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, pos.pattern, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, pos.pattern.Length).ExtactString();
                                                     break;
@@ -175,7 +175,7 @@ namespace Compilation.Lexer {
                                         var match = Regex.Match(lw, pos.pattern);
                                         if (match.Success) {
                                             if (pos.prohibitFollowLetters != 0) {
-                                                if (IsNotProhibited(lw[match.Value.Length], pos.prohibitFollowLetters)) {
+                                                if (pos.pattern.Length == lw.Length || IsNotProhibited(lw[match.Value.Length], pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, match.Value, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, match.Value.Length).ExtactString();
                                                     break;
@@ -190,7 +190,7 @@ namespace Compilation.Lexer {
                                         var match = Regex.Match(strpart, pos.pattern);
                                         if (match.Success) {
                                             if (pos.prohibitFollowLetters != 0) {
-                                                if (IsNotProhibited(char.ToLower(strpart[match.Value.Length]), pos.prohibitFollowLetters)) {
+                                                if (pos.pattern.Length == strpart.Length || IsNotProhibited(char.ToLower(strpart[match.Value.Length]), pos.prohibitFollowLetters)) {
                                                     tokens.Add(new Program.Token(pos.token, match.Value, linei, part.StartNumber));
                                                     strpart = part.RemoveSub(0, match.Value.Length).ExtactString();
                                                     break;

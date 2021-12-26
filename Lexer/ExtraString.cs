@@ -112,44 +112,6 @@ namespace Compilation.Lexer {
             return false;
         }
 
-        /*public StringBox[] Split(string delimiter) {
-            if (str.Length == 0) return Array.Empty<StringBox>();
-
-            List<StringBox> boxes = new();
-
-            int prew_i = -1, now_check = 0;
-            for (int i = 0; i != str.Length; ++i) {
-                if (str[i] == delimiter[now_check]) {
-                    if (++now_check == delimiter.Length) {
-                        now_check = 0;
-                        if (prew_i != -1) {
-                            boxes.Add(new StringBox(string.Join("", str.Skip(prew_i).Take(i - prew_i - 1)), numbers[prew_i], numbers[prew_i]));
-                            prew_i = i + 1;
-                        } else {
-                            boxes.Add(new StringBox(string.Join("", str.Take(i - 1)), numbers[0], numbers[0]));
-                            prew_i = i + 1;
-                        }
-                    }
-                } else {
-                    i -= now_check;
-                    now_check = 0;
-                }
-            }
-
-            if (prew_i != -1) {
-                int num_payload = (str.Length != prew_i ? numbers[prew_i] : numbers[prew_i - 1]);
-                boxes.Add(new StringBox(string.Join("", str.Skip(prew_i).Take(str.Length - prew_i)), num_payload, num_payload));
-            } else {
-                boxes.Add(new StringBox(string.Join("", str.Take(str.Length)), numbers[0], numbers[0]));
-            }
-
-            return boxes.ToArray();
-        }*/
-
-        /*public bool Contains(string substr) {
-            return string.Join("", str).Contains(substr);
-        }*/
-
         public char this[int i] {
             get { return str[i]; }
         }
