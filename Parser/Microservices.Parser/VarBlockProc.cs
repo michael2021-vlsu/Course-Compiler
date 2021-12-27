@@ -114,7 +114,7 @@ namespace Compilation.Parser {
                     var outp = JustArithm(DecodeLabelToCode(parts[1]), out TreeNode value, null);
                     if (outp.fail) return outp;
 
-                    lvariables.Add(input.tokens[parts[0].StartNumber].content, new Variable(input.tokens[parts[0].StartNumber].content, DataType.Integer, value, false));
+                    lvariables.Add(input.tokens[parts[0].StartNumber].content, new Variable(input.tokens[parts[0].StartNumber].content, DataType.Integer, value, true));
 
                 } else {
                     var inp = input.tokens[statmnt.StartNumber];
