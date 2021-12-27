@@ -6,4 +6,8 @@
     <StartupObject>Compilation.Parser.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PCRE.NET" Version="0.18.1" />
+  </ItemGroup>
+
 </Project>
