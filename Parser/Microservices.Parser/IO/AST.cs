@@ -1,4 +1,6 @@
-﻿
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+
 namespace Compilation.Parser.AST {
     struct VarDesc_ConstablePointeble {
         public VarDesc_ConstablePointeble(string name, string type, bool pointer, bool @const) {
@@ -19,7 +21,7 @@ namespace Compilation.Parser.AST {
         }
         public string name,
             type;
-        public TreeNode constValue;
+        public object constValue;
     }
 
     abstract class TreeNode {
@@ -41,14 +43,14 @@ namespace Compilation.Parser.AST {
             this.operandLeft = operandLeft;
             this.operandRight = operandRight;
         }
-        public TreeNode operandLeft,
+        public object operandLeft,
             operandRight;
     }
     abstract class Unary : Operator {
         public Unary(string @operator, TreeNode operandRight) : base(@operator) {
             this.operandRight = operandRight;
         }
-        public TreeNode operandRight;
+        public object operandRight;
     }
 
     namespace ArithmeticOperators {
@@ -64,9 +66,9 @@ namespace Compilation.Parser.AST {
         class Multiply : Binary {
             public Multiply(TreeNode a, TreeNode b) : base("multiply", a, b) { }
         }
-        /*class Divide : Binary { //Like Div in this case
+        class Divide : Binary { //Like Div in this case
             public Divide(TreeNode a, TreeNode b) : base("divide", a, b) { }
-        }*/
+        }
         class Div : Binary {
             public Div(TreeNode a, TreeNode b) : base("div", a, b) { }
         }
@@ -134,7 +136,11 @@ namespace Compilation.Parser.AST {
             this.arguments = arguments;
         }
         public string function;
-        public TreeNode[] arguments;
+        public object[] arguments;
+    }
+
+    class Assign : Binary {
+        public Assign(TreeNode a, TreeNode b) : base("assign", a, b) { }
     }
 
     class Exit : Call {
@@ -153,8 +159,8 @@ namespace Compilation.Parser.AST {
             this.body = body;
             this.condition = condition;
         }
-        public TreeNode condition;
-        public TreeNode[] body;
+        public object condition;
+        public object[] body;
     }
 
     class For : TreeNode {
@@ -164,9 +170,9 @@ namespace Compilation.Parser.AST {
             this.to = to;
             this.ascending = ascending;
         }
-        public TreeNode from, to;
+        public object from, to;
         public bool ascending;
-        public TreeNode[] body;
+        public object[] body;
     }
 
 
@@ -180,6 +186,6 @@ namespace Compilation.Parser.AST {
         public string name;
         public VarDesc_ConstablePointeble[] arguments;
         public VarDef_Constable[] variables;
-        public TreeNode[] body;
+        public object[] body;
     }
 }

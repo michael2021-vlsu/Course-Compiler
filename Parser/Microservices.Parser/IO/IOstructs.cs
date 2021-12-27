@@ -1,4 +1,6 @@
-﻿using Compilation.Parser.AST;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+using Compilation.Parser.AST;
 
 namespace Compilation.Parser.IOstructs {
     struct Token {
@@ -19,19 +21,39 @@ namespace Compilation.Parser.IOstructs {
             this.functions = functions;
         }
 
-        public TreeNode[] main;
+        public object[] main;
         public Procedure[] functions;
     }
 
-    
-
     struct Output {
+        public static Output MakeFail(string errorDesc, uint errorLine, uint errorColumn) {
+            var outp = new Output();
+            outp.success = false;
+            outp.errorDesc = errorDesc;
+            outp.errorLine = errorLine;
+            outp.errorColumn = errorColumn;
+            outp.syntaxTree = null;
+            outp.variables = null;
+            return outp;
+        }
+
+        public static Output MakeSucess(TreeRoot syntaxTree, VarDef_Constable[] variables) {
+            var outp = new Output();
+            outp.success = true;
+            outp.errorDesc = null;
+            outp.errorLine = 0;
+            outp.errorColumn = 0;
+            outp.syntaxTree = syntaxTree;
+            outp.variables = variables;
+            return outp;
+        }
+
         public bool success;
         public string errorDesc;
         public uint errorLine, 
             errorColumn;
 
-        public VarDefConstable[] variables;
+        public VarDef_Constable[] variables;
         public TreeRoot syntaxTree;
     }
 }
